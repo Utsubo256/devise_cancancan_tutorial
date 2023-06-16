@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15.2
+    container_name: devise_cancancan-postgres
+    volumes:
+      - 'postgres_volume:/var/lib/postgresql/data'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  api:
+    image: devise_cancancan-api
+    container_name: devise_cancancan-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - '.:/myapp'
+    environment:
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+    tty: true
+    stdin_open: true
+    depends_on:
+      - db
+
+volumes:
+  postgres_volume:
